@@ -7,6 +7,8 @@ from alembic import context
 
 # Import Base to give Alembic access to all database models
 from app.db import Base
+# Import all models so Alembic can detect them for autogenerate
+from app import models
 import os
 from dotenv import load_dotenv
 
