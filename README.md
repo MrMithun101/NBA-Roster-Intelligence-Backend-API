@@ -46,6 +46,21 @@ uvicorn app.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
+## Tests
+
+Uses pytest with an in-memory SQLite test DB (no Postgres/Redis required). FastAPI is exercised via `httpx.AsyncClient` and `ASGITransport`.
+
+```bash
+# Run all tests
+pytest
+
+# Verbose
+pytest -v
+
+# With coverage (if pytest-cov is installed)
+pytest --cov=app
+```
+
 ## Docker (full stack)
 
 Run API, Postgres, and Redis with one command:
