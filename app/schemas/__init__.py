@@ -84,3 +84,29 @@ class RosterMembershipDetail(RosterMembershipResponse):
     team: Optional[TeamResponse] = None
     player: Optional[PlayerResponse] = None
     season: Optional[SeasonResponse] = None
+
+
+# ---- Consistent API response wrappers ----
+class TeamsListResponse(BaseModel):
+    """GET /teams: list of teams."""
+    data: list[TeamResponse]
+
+
+class TeamDetailResponse(BaseModel):
+    """GET /teams/{id}: single team."""
+    data: TeamResponse
+
+
+class PaginatedPlayersResponse(BaseModel):
+    """GET /players: paginated list with total/limit/offset."""
+    data: list[PlayerResponse]
+    total: int
+    limit: int
+    offset: int
+
+
+class RosterListResponse(BaseModel):
+    """GET /teams/{id}/roster?season=: roster (players) for team in season."""
+    data: list[PlayerResponse]
+    season: int
+    team_id: int
