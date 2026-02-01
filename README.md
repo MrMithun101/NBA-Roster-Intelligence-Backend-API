@@ -46,6 +46,44 @@ uvicorn app.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
+## Docker (full stack)
+
+Run API, Postgres, and Redis with one command:
+
+```bash
+docker compose up --build
+```
+
+- **API:** http://localhost:8000 — **Docs:** http://localhost:8000/docs  
+- **Postgres:** `localhost:5432` (user/pass/db from env or defaults below)  
+- **Redis:** `localhost:6379`
+
+**Container networking:** Compose creates a default network. Services reach each other by **service name** as hostname: the API uses `postgres:5432` and `redis:6379`, not `localhost`. Only the API is published on your host (port 8000); Postgres and Redis are on the same network so the API container can connect.
+
+**Environment (optional):** Create a `.env` in the project root to override defaults:
+
+- `POSTGRES_USER` (default: `app`)
+- `POSTGRES_PASSWORD` (default: `secret`)
+- `POSTGRES_DB` (default: `nba_roster_db`)
+
+`DATABASE_URL` and `REDIS_URL` are set inside the `api` service to use hosts `postgres` and `redis`.
+
+**One-liners:**
+
+```bash
+# Build and start all services (migrations run on API startup)
+docker compose up --build
+
+# Run in background
+docker compose up -d --build
+
+# Seed the DB after first run
+docker compose run --rm api python scripts/seed.py
+
+# Stop
+docker compose down
+```
+
 ## Endpoints
 
 - `GET /health` - Health check endpoint returning `{"status": "ok"}`
