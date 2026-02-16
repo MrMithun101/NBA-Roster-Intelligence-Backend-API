@@ -48,6 +48,29 @@ def get_json(key: str) -> Any | None:
         return None
 
 
+def delete_keys_by_prefix(prefix: str) -> int:
+    """
+    Delete all Redis keys matching the prefix. Uses SCAN to avoid blocking.
+    Returns the number of keys deleted. Safe no-op if Redis is down.
+    """
+    client = _get_client()
+    if not client:
+        return 0
+    try:
+        count = 0
+        cursor = 0
+        while True:
+            cursor, keys = client.scan(cursor=cursor, match=f"{prefix}*", count=100)
+            for k in keys:
+                client.delete(k)
+                count += 1
+            if cursor == 0:
+                break
+        return count
+    except Exception:
+        return 0
+
+
 def set_json(key: str, value: Any, ttl_seconds: int) -> bool:
     """
     Set a JSON value in Redis with TTL. Returns True on success, False on
