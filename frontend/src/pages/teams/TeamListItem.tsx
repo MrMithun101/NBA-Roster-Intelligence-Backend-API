@@ -10,10 +10,14 @@ export function TeamListItem({ team }: TeamListItemProps) {
     <li>
       <Link
         to={`/teams/${team.id}`}
-        className="block px-4 py-3 rounded-lg border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 text-slate-900"
+        className="group block px-5 py-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-[var(--color-nba-orange)]/30 transition-all duration-200"
       >
-        <span className="font-medium">{team.name}</span>
-        <span className="text-slate-500 ml-2">({team.abbreviation})</span>
+        <span className="font-semibold text-slate-900 group-hover:text-[var(--color-nba-orange)] transition-colors">
+          {team.name}
+        </span>
+        <span className="ml-2 text-slate-500 text-sm font-medium">
+          {team.abbreviation}
+        </span>
       </Link>
     </li>
   )

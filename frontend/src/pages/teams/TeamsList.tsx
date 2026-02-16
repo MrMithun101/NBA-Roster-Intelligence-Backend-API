@@ -7,7 +7,7 @@ interface TeamsListProps {
 
 export function TeamsList({ teams }: TeamsListProps) {
   return (
-    <ul className="space-y-2">
+    <ul className="grid gap-3 sm:grid-cols-2">
       {teams.map((team) => (
         <TeamListItem key={team.id} team={team} />
       ))}

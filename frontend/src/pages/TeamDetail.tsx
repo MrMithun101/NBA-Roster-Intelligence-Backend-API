@@ -32,13 +32,19 @@ export function TeamDetail() {
 
   if (loading) return <TeamDetailLoading />
   if (error) return <TeamDetailError message={error} />
-  if (!team) return <p className="text-slate-500">Team not found.</p>
+  if (!team) {
+    return (
+      <div className="rounded-xl bg-slate-100 border border-slate-200 px-5 py-6 text-center">
+        <p className="text-slate-600 font-medium">Team not found.</p>
+      </div>
+    )
+  }
 
   return (
     <div>
       <TeamDetailHeader team={team} />
       <SeasonDropdown value={season} onChange={setSeason} />
-      <h2 className="text-lg font-medium text-slate-800 mb-3">Roster</h2>
+      <h2 className="text-lg font-semibold text-slate-800 mb-4">Roster</h2>
       <RosterTable players={roster} />
     </div>
   )

@@ -22,7 +22,8 @@ export function Teams() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900 mb-6">Teams</h1>
+      <h1 className="text-3xl font-bold text-slate-900 mb-2">Teams</h1>
+      <p className="text-slate-600 mb-8">Browse NBA teams and their rosters</p>
       <TeamsList teams={teams} />
     </div>
   )

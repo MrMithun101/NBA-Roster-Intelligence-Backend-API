@@ -1,6 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --color-nba-orange: #ed6b2a;
+  --color-nba-navy: #1e293b;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
