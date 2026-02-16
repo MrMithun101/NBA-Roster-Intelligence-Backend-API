@@ -1,0 +1,16 @@
+import { TeamListItem } from './TeamListItem'
+import type { Team } from '../../api/endpoints'
+
+interface TeamsListProps {
+  teams: Team[]
+}
+
+export function TeamsList({ teams }: TeamsListProps) {
+  return (
+    <ul className="space-y-2">
+      {teams.map((team) => (
+        <TeamListItem key={team.id} team={team} />
+      ))}
+    </ul>
+  )
+}
