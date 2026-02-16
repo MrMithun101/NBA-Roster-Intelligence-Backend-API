@@ -1,26 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-
-const API_BASE = '/api'
-
-interface Team {
-  id: number
-  name: string
-  abbreviation: string
-}
-
-interface Player {
-  id: number
-  first_name: string
-  last_name: string
-  position: string
-}
-
-interface RosterResponse {
-  data: Player[]
-  season: number
-  team_id: number
-}
+import { getTeam, getRoster } from '../api/endpoints'
+import type { Team, Player } from '../api/endpoints'
 
 export function TeamDetail() {
   const { teamId } = useParams()
@@ -32,15 +13,11 @@ export function TeamDetail() {
 
   useEffect(() => {
     if (!teamId) return
-    Promise.all([
-      fetch(`${API_BASE}/teams/${teamId}`).then((r) => r.json()),
-      fetch(`${API_BASE}/teams/${teamId}/roster?season=${season}`).then((r) =>
-        r.json()
-      ),
-    ])
-      .then(([teamRes, rosterRes]) => {
-        setTeam(teamRes.data ?? null)
-        setRoster((rosterRes as RosterResponse).data ?? [])
+    const id = Number(teamId)
+    Promise.all([getTeam(id), getRoster(id, season)])
+      .then(([t, r]) => {
+        setTeam(t)
+        setRoster(r)
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))

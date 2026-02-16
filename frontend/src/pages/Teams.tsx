@@ -1,17 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-const API_BASE = '/api'
-
-interface Team {
-  id: number
-  name: string
-  abbreviation: string
-}
-
-interface TeamsResponse {
-  data: Team[]
-}
+import { getTeams } from '../api/endpoints'
+import type { Team } from '../api/endpoints'
 
 export function Teams() {
   const [teams, setTeams] = useState<Team[]>([])
@@ -19,12 +9,8 @@ export function Teams() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`${API_BASE}/teams`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch teams')
-        return res.json()
-      })
-      .then((json: TeamsResponse) => setTeams(json.data ?? []))
+    getTeams()
+      .then(setTeams)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])

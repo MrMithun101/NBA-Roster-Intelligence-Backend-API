@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react'
+import { getPlayers } from '../api/endpoints'
+import type { Player } from '../api/endpoints'
 
-const API_BASE = '/api'
-
-interface Player {
-  id: number
-  first_name: string
-  last_name: string
-  position: string
-}
-
-interface PlayersResponse {
-  data: Player[]
-  total: number
-  limit: number
-  offset: number
-}
+const DEFAULT_LIMIT = 20
 
 export function Players() {
   const [players, setPlayers] = useState<Player[]>([])
@@ -22,17 +10,12 @@ export function Players() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [offset, setOffset] = useState(0)
-  const limit = 20
 
   useEffect(() => {
-    fetch(`${API_BASE}/players?limit=${limit}&offset=${offset}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch players')
-        return res.json()
-      })
-      .then((json: PlayersResponse) => {
-        setPlayers(json.data ?? [])
-        setTotal(json.total ?? 0)
+    getPlayers({ limit: DEFAULT_LIMIT, offset })
+      .then(({ data, total: t }) => {
+        setPlayers(data)
+        setTotal(t)
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
@@ -42,8 +25,8 @@ export function Players() {
     return <p className="text-slate-500">Loading players...</p>
   if (error) return <p className="text-red-600">{error}</p>
 
-  const totalPages = Math.ceil(total / limit)
-  const currentPage = Math.floor(offset / limit) + 1
+  const totalPages = Math.ceil(total / DEFAULT_LIMIT)
+  const currentPage = Math.floor(offset / DEFAULT_LIMIT) + 1
 
   return (
     <div>
@@ -62,7 +45,7 @@ export function Players() {
       {totalPages > 1 && (
         <div className="mt-6 flex gap-2 items-center">
           <button
-            onClick={() => setOffset(Math.max(0, offset - limit))}
+            onClick={() => setOffset(Math.max(0, offset - DEFAULT_LIMIT))}
             disabled={offset === 0}
             className="px-4 py-2 rounded border border-slate-300 text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
           >
@@ -72,8 +55,8 @@ export function Players() {
             Page {currentPage} of {totalPages}
           </span>
           <button
-            onClick={() => setOffset(offset + limit)}
-            disabled={offset + limit >= total}
+            onClick={() => setOffset(offset + DEFAULT_LIMIT)}
+            disabled={offset + DEFAULT_LIMIT >= total}
             className="px-4 py-2 rounded border border-slate-300 text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
           >
             Next

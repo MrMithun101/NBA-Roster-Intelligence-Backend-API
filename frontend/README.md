@@ -1,4 +1,27 @@
-# React + TypeScript + Vite
+# NBA Roster Intelligence – Frontend
+
+React + TypeScript + Vite app for the NBA Roster API.
+
+## Local dev
+
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+2. For local dev with the Vite proxy (default), use:
+   ```
+   VITE_API_BASE_URL=/api
+   ```
+   Or to hit the backend directly:
+   ```
+   VITE_API_BASE_URL=http://localhost:8000
+   ```
+3. Start the API (`uvicorn app.main:app --reload`) and run:
+   ```bash
+   npm run dev
+   ```
+
+---
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
