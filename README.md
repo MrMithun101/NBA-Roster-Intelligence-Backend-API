@@ -46,6 +46,63 @@ uvicorn app.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
+## Tests
+
+Uses pytest with an in-memory SQLite test DB (no Postgres/Redis required). FastAPI is exercised via `httpx.AsyncClient` and `ASGITransport`.
+
+```bash
+# Run all tests
+pytest
+
+# Verbose
+pytest -v
+
+# With coverage (if pytest-cov is installed)
+pytest --cov=app
+```
+
+## Docker (full stack)
+
+Run API, Postgres, and Redis with one command. **No secrets are in the repo**; Compose reads from `.env`.
+
+```bash
+# Required: copy .env.example to .env and set POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+cp .env.example .env
+# Edit .env and set a real POSTGRES_PASSWORD
+
+docker compose up --build
+```
+
+- **API:** http://localhost:8000 — **Docs:** http://localhost:8000/docs  
+- **Postgres:** `localhost:5432` (user/pass/db from `.env`)  
+- **Redis:** `localhost:6379`
+
+**Container networking:** Compose creates a default network. Services reach each other by **service name** as hostname: the API uses `postgres:5432` and `redis:6379`, not `localhost`. Only the API is published on your host (port 8000); Postgres and Redis are on the same network so the API container can connect.
+
+**Environment (required for Docker):** Create a `.env` in the project root from `.env.example` and set:
+
+- `POSTGRES_USER`
+- `POSTGRES_PASSWORD` (use a strong password; never commit it)
+- `POSTGRES_DB`
+
+`DATABASE_URL` and `REDIS_URL` are set inside the `api` service from these vars, using hosts `postgres` and `redis`.
+
+**One-liners:**
+
+```bash
+# Build and start all services (migrations run on API startup)
+docker compose up --build
+
+# Run in background
+docker compose up -d --build
+
+# Seed the DB after first run
+docker compose run --rm api python scripts/seed.py
+
+# Stop
+docker compose down
+```
+
 ## Endpoints
 
 - `GET /health` - Health check endpoint returning `{"status": "ok"}`

@@ -5,8 +5,9 @@ These models represent the core entities: Teams, Players, Seasons, and
 the relationships between them through RosterMembership.
 """
 
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Index
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from app.db import Base
 
 
@@ -15,12 +16,16 @@ class Team(Base):
     Represents an NBA team.
     
     Example: Los Angeles Lakers, Boston Celtics, etc.
+    external_id: stable ID from external source (e.g. NBA API) for upsert matching.
+    updated_at: last time we synced this row from the external source.
     """
     __tablename__ = "teams"
     
     id = Column(Integer, primary_key=True, index=True)
+    external_id = Column(String(32), unique=True, index=True, nullable=True)  # e.g. NBA API team id
     name = Column(String, nullable=False, index=True)  # e.g., "Los Angeles Lakers"
     abbreviation = Column(String(3), nullable=False, unique=True, index=True)  # e.g., "LAL"
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationship: one team can have many roster memberships
     roster_memberships = relationship("RosterMembership", back_populates="team")
@@ -31,13 +36,17 @@ class Player(Base):
     Represents an NBA player.
     
     Example: LeBron James, Stephen Curry, etc.
+    external_id: stable ID from external source (e.g. NBA API) for upsert matching.
+    updated_at: last time we synced this row from the external source.
     """
     __tablename__ = "players"
     
     id = Column(Integer, primary_key=True, index=True)
+    external_id = Column(String(32), unique=True, index=True, nullable=True)  # e.g. NBA API player id
     first_name = Column(String, nullable=False, index=True)
     last_name = Column(String, nullable=False, index=True)
     position = Column(String, nullable=False, index=True)  # e.g., "PG", "SG", "SF", "PF", "C"
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationship: one player can have many roster memberships (across different teams/seasons)
     roster_memberships = relationship("RosterMembership", back_populates="player")
